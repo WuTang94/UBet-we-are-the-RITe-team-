@@ -1,2 +1,3 @@
-# UBet-we-are-the-RITe-team-
-# UBet-we-are-the-RITe-team-
+For taking Code to UB.
+Yea. 
+~\(XX)/~
