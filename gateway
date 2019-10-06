@@ -1,0 +1,17 @@
+#!/bin/bash
+
+n=1 
+m=$( $n + 1 )
+file=open #path 
+for line in file; do
+    passold="$(grep "$n" file)"
+    passnew="$(grep "$m" file)"
+done
+
+
+file2=open #path
+for line in file2; do 
+    sed -i "s/^$n.*/$n ${passnew}/"
+done
+
+n=$( $n + 1 )
