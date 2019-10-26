@@ -1,0 +1,102 @@
+Wordpress Setup
+
+1. Install Nginx (wordpress needs webserver to function)
+- sudo apt install nginx
+
+- sudo systemctl stop nginx.service
+- sudo systemctl start nginx.service
+- sudo systemctl enable nginx.service
+
+2. Install MariaDB (database server)
+- sudo apt-get install mariadb-server mariadb-client
+
+- sudo systemctl stop mariadb.service
+- sudo systemctl start mariadb.service
+- sudo systemctl enable mariadb.service
+
+(secure server)
+- sudo mysql_secure_installation
+
+3. Install PHP-FPM (wordpress requires php-fpm)
+- sudo apt install php-fpm php-common php-mbstring php-xmlrpc php-soap php-gd php-xml php-intl php-mysql php-cli php-mcrypt php-ldap php-zip php-curl
+
+- sudo nano /etc/php/7.2/fpm/php.ini
+
+Change:
+
+post_max_size = 100M
+memory_limit = 256M
+max_execution_time = 360
+upload_max_filesize = 100M
+date.timezone = America/Chicago
+
+4. Blank Wordpress Database
+- sudo mysql -u root -p
+
+- CREATE DATABASE WP_database;
+- CREATE USER ‘wp_user’@’localhost’ IDENTIFIED BY ‘1234’;
+
+- GRANT ALL ON WP_database.* TO ‘wp_user’@’localhost’ IDENTIFIED BY ‘1234’ WITH GRANT OPTION;
+
+- FLUSH PRIVILEGES;
+- EXIT;
+
+5. Download Wordpress
+- cd /tmp && wget https://wordpress.org/latest.tar.gz
+- tar -zxvf latest.tar.gz
+- sudo mv wordpress /var/www/html/wordpress
+- sudo chown -R www-data:www-data /var/www/html/wordpress/
+- sudo chmod -R 755 /var/www/html/wordpress/
+
+6. Configure Wordpress
+- sudo mv /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
+- sudo nano /var/www/html/wordpress/wp-config.php
+
+// ** MySQL settings - You can get this info from your web host ** //
+/** The name of the database for WordPress */
+define('DB_NAME', 'WP_database');
+/** MySQL database username */
+define('DB_USER', 'wp_user');
+/** MySQL database password */
+define('DB_PASSWORD', 'new_password_here');
+/** MySQL hostname */
+define('DB_HOST', 'localhost');
+/** Database Charset to use in creating database tables. */
+define('DB_CHARSET', 'utf8');
+/** The Database Collate type. Don't change this if in doubt. */
+define('DB_COLLATE', '');
+
+7. Configure Wordpress site
+- sudo nano /etc/nginx/sites-available/wordpress
+
+server {
+    listen 80;
+    listen [::]:80;
+    root /var/www/html/wordpress;
+    index  index.php index.html index.htm;
+    server_name  example.com www.example.com;
+
+     client_max_body_size 100M;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;        
+    }
+
+    location ~ \.php$ {
+    include snippets/fastcgi-php.conf
+    fastcgi_pass             unix:/var/run/php/php7.2-fpm.sock;
+    fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}		
+
+8. Enable Wordpress site
+- sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
+- sudo systemctl restart nginx.service
+- sudo systemctl restart php7.2-fpm.service
+
+
+NOTES:
+
+/var/log/nginx
+/etc/nginx
+/var/www/html/wordpress
