@@ -1,0 +1,45 @@
+Linux Mint 5-minute plan:
+
+1. Change password
+    - passwd --> current password --> new password
+
+2. Firewall rules
+    - sudo apt install ufw
+    - sudo ufw status
+    - sudo ufw allow [port] 
+    - sudo ufw delete [num]
+    - sudo ufw deny [port]
+
+    Inbound: 22
+    Outbound: 80, 53, 443
+
+3. Processes 
+    - ps aux (screenshot)
+    - kill -9 [pid]
+   
+4. Services 
+    - ps -aux | less
+    - chkconfig [service] off or --del
+
+5. Users 
+    - vipw
+    - bin/bash --> bin/nologin
+    - faillog -a
+
+6. ssh
+    - etc/ssh/ssh.config
+        - permitrootlogin --> no
+        - allowusers --> users
+        
+7. Harden --> chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://lockdown.ubnetdef.org/resources/BeginnerSecurityGuide.pdf         
+
+
+
+
+
+
+
+
+
+
+    
