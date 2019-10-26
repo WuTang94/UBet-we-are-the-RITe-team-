@@ -1,0 +1,9 @@
+logs: 
+  /var/log 
+  
+  
+ users: 
+  /etc/password 
+  
+crontab 
+  crontab -e/l
